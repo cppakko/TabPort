@@ -1,0 +1,73 @@
+name: Build and Package
+
+on:
+  push:
+    branches: [ master ]
+  release:
+    types: [ published ]
+
+jobs:
+  build_ptr_plugin:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Run .NET build script
+        run: ./pack.ps1
+
+      - name: Upload .NET Artifacts (ARM64)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TabPort-PTR-Plugin-arm64
+          path: bin/ARM64/*.zip
+          retention-days: 90
+
+      - name: Upload .NET Artifacts (x64)
+        uses: actions/upload-artifact@v4
+        with:
+          name: TabPort-PTR-Plugin-x64
+          path: bin/x64/*.zip
+          retention-days: 90
+
+  build_webext:
+    runs-on: ubuntu-latest
+    needs:
+      - build_ptr_plugin
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install yarn dependencies
+        run: yarn install
+        working-directory: TabPort-webext
+
+      - name: Build Node.js packages
+        run: |
+          yarn zip
+          yarn zip -b firefox
+        working-directory: TabPort-webext
+
+      - name: Upload Node.js Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: TabPort-webext
+          path: TabPort-webext/.output/*.zip
+          retention-days: 90
+          include-hidden-files: true

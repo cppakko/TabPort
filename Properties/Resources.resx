@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="custom_port_description" xml:space="preserve">
+        <value>Open WebSocket Server on the custom port  </value>
+    </data>
+    <data name="plugin_name" xml:space="preserve">
+        <value>TabPort</value>
+    </data>
+    <data name="plugin_description" xml:space="preserve">
+        <value>Switch between open browser tabs.</value>
+    </data>
+    <data name="title_weight_description" xml:space="preserve">
+        <value>The weight of the website title in searches.</value>
+    </data>
+    <data name="url_weight_description" xml:space="preserve">
+        <value>The weight of the website URL in searches.</value>
+    </data>
+    <data name="favicon_db_path_priority_description" xml:space="preserve">
+        <value>Specify the priority for Favicon database retrieval.</value>
+    </data>
+    <data name="custom_favicon_db_path_description" xml:space="preserve">
+        <value>Custom Favicon database location. Defaults to Chromium layout. For Firefox layout, please select Firefox in "Favicon Db Priority" below.</value>
+    </data>
+    <data name="url_weight" xml:space="preserve">
+        <value>Url Weight</value>
+    </data>
+    <data name="title_weight" xml:space="preserve">
+        <value>Title Weight</value>
+    </data>
+    <data name="custom_favicon_db_path" xml:space="preserve">
+        <value>Favicon Db Path</value>
+    </data>
+    <data name="custom_port" xml:space="preserve">
+        <value>Port</value>
+    </data>
+    <data name="favicon_db_path_priority" xml:space="preserve">
+        <value>Favicon Db Priority</value>
+    </data>
+    <data name="open_connection_sqlite_exception_toast_title" xml:space="preserve">
+        <value>[TabPort] Error opening database connection.</value>
+    </data>
+    <data name="open_connection_sqlite_exception_toast_description" xml:space="preserve">
+        <value>Website icon display will be temporarily disabled until reset.</value>
+    </data>
+</root>

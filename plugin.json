@@ -1,0 +1,14 @@
+{
+  "ID": "CEFA2A750B2D4D56A166EE27BE3DBBD8",
+  "ActionKeyword": "tab",
+  "IsGlobal": false,
+  "Name": "TabPort",
+  "Author": "cppakko",
+  "Version": "0.87.1.0",
+  "Language": "csharp",
+  "Website": "https://github.com/cppakko/TabPort",
+  "ExecuteFileName": "Community.PowerToys.Run.Plugin.TabPort.dll",
+  "IcoPathDark": "Images\\tabport.dark.png",
+  "IcoPathLight": "Images\\tabport.light.png",
+  "DynamicLoading": false
+}

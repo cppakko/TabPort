@@ -24,7 +24,7 @@
     "immer": "^10.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "wxt": "^0.19.22",
+    "wxt": "^0.19.23",
     "zustand": "^5.0.1"
   },
   "devDependencies": {

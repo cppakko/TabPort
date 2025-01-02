@@ -6,9 +6,9 @@ const TEN_SECONDS_MS = 10 * 1000;
 let keepAliveIntervalId: number | null = null;
 let tabUpdateListener: any | null = null;
 
-browser.runtime.onStartup.addListener(() => {
+async function tryAutoConnect() {
   const { isConnected, isConnecting, setIsConnected, setIsConnecting, setSocket } = useWebSocketStore.getState();
-  const { host, port, autoConnect, } = useWebSocketConfigStore.getState();
+  const { host, port, autoConnect } = useWebSocketConfigStore.getState();
   if (autoConnect && !isConnected && !isConnecting) {
     console.log('Auto-connecting to WebSocket server at:', `ws://${host}:${port}`);
     connect(
@@ -21,13 +21,18 @@ browser.runtime.onStartup.addListener(() => {
       sendTabs
     );
   }
-});
+}
 
 export default defineBackground(async () => {
   initPegasusTransport();
   try {
     await webSocketConfigStoreBackendReady();
     await webSocketStoreBackendReady();
+    browser.runtime.onStartup.addListener(() => {
+      tryAutoConnect();
+    });
+    await tryAutoConnect();
+
   } catch (error) {
     console.error("Error initializing stores:", error);
     return; // Consider whether to proceed if store initialization fails

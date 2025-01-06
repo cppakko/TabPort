@@ -26,9 +26,9 @@ public class SqliteConnectionUtils
     {
         var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         var databasePath = "";
-        if (Main.Setting.CustomFaviconDbPath is not null && File.Exists(Main.Setting.CustomFaviconDbPath))
+        if (Main.Setting.CustomFaviconDbPath is not null)
         {
-            databasePath = Environment.ExpandEnvironmentVariables(Main.Setting.CustomFaviconDbPath);
+            databasePath = File.Exists(Main.Setting.CustomFaviconDbPath) ? Environment.ExpandEnvironmentVariables(Main.Setting.CustomFaviconDbPath) : "unknown";
         }
         else
         {

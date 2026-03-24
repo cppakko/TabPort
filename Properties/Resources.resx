@@ -60,4 +60,10 @@
     <data name="open_connection_sqlite_exception_toast_description" xml:space="preserve">
         <value>Website icon display will be temporarily disabled until reset.</value>
     </data>
+    <data name="max_results" xml:space="preserve">
+        <value>Max Results</value>
+    </data>
+    <data name="max_results_description" xml:space="preserve">
+        <value>Maximum number of results to display. Reducing this value improves search performance when you have many tabs.</value>
+    </data>
 </root>

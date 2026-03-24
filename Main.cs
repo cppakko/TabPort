@@ -117,11 +117,9 @@ public class Main : IPlugin, IContextMenu, IDisposable, ISettingProvider, IDelay
                 x.Key == nameof(Setting.FaviconDbPathPriority))?.ComboBoxValue;
         if (comboBoxValue != null)
             Setting.FaviconDbPathPriority = (Settings.FaviconDbPathPriorityItem)comboBoxValue;
-        /*if (Setting.Port != null)
-        {
-            WsUtils.RestartWebSocketServer(Setting.Port);
-        }*/
-        
+        Setting.MaxResults = Convert.ToInt32(settings.AdditionalOptions.FirstOrDefault(x =>
+            x.Key == nameof(Setting.MaxResults))?.NumberValue ?? 20);
+        FaviconFetcher.ClearCache();
     }
 
     public IEnumerable<PluginAdditionalOption> AdditionalOptions => Setting.AdditionalOptions;
@@ -135,43 +133,62 @@ public class Main : IPlugin, IContextMenu, IDisposable, ISettingProvider, IDelay
         {
             browserTabs.AddRange(RuntimeStaticData.BrowserTabData[key].Select(tab => Tuple.Create(key, tab)));
         }
-        return browserTabs.Select(tuple =>
-            {
-                var browserTab = tuple.Item2;
-                var browser = tuple.Item1;
-                var faviconBin = FaviconFetcher.FetchFaviconLocalDatabase(browserTab.Url);
-                var result = new Result
-                {
-                    QueryTextDisplay = browserTab.Title,
-                    Title = browserTab.Title,
-                    SubTitle = browserTab.Url,
-                    ToolTipData = new ToolTipData(browserTab.Title, browserTab.Status),
-                    Action = context =>
-                    {
-                        Clipboard.SetDataObject(browserTab.Title);
-                        RuntimeStaticData.SwitchToTabAction(browserTab);
-                        _ = WebSocketUtils.SendMessageAsync($"switch {browserTab.Id} {browserTab.WindowId}",
-                            browser);
-                        return true;
-                    },
-                    ContextData = new Tuple<WebSocket, BrowserTab>(browser, browserTab),
-                    Score =
-                        (int)(StringMatcher.FuzzySearch(search, browserTab.Title).Score * Setting.TitleWeight +
-                              StringMatcher.FuzzySearch(search, browserTab.Url).Score * Setting.UrlWeight),
-                    Glyph = "\xE838"
-                };
-                if (faviconBin != null && faviconBin.Length > 0)
-                {
-                    result.Icon = () => GetImageSourceFromRawPngData(faviconBin);
-                }
-                else
-                {
-                    result.IcoPath = IconPath;
-                }
 
-                return result;
-            })
-            .ToList();
+        var maxResults = Setting.MaxResults;
+
+        var scored = browserTabs.Select(tuple =>
+        {
+            var tab = tuple.Item2;
+            var score = string.IsNullOrEmpty(search)
+                ? 0
+                : (int)(StringMatcher.FuzzySearch(search, tab.Title).Score * Setting.TitleWeight +
+                        StringMatcher.FuzzySearch(search, tab.Url).Score * Setting.UrlWeight);
+            return (tuple, score);
+        });
+
+        var filtered = string.IsNullOrEmpty(search)
+            ? scored
+            : scored.Where(x => x.score > 0);
+
+        var topResults = filtered
+            .OrderByDescending(x => x.score)
+            .Take(maxResults);
+
+        return [.. topResults.Select(x =>
+        {
+            var browserTab = x.tuple.Item2;
+            var browser = x.tuple.Item1;
+            var faviconBin = FaviconFetcher.FetchFaviconLocalDatabase(browserTab.Url);
+
+            var result = new Result
+            {
+                QueryTextDisplay = browserTab.Title,
+                Title = browserTab.Title,
+                SubTitle = browserTab.Url,
+                ToolTipData = new ToolTipData(browserTab.Title, browserTab.Status),
+                Action = context =>
+                {
+                    Clipboard.SetDataObject(browserTab.Title);
+                    RuntimeStaticData.SwitchToTabAction(browserTab);
+                    _ = WebSocketUtils.SendMessageAsync($"switch {browserTab.Id} {browserTab.WindowId}",
+                        browser);
+                    return true;
+                },
+                ContextData = new Tuple<WebSocket, BrowserTab>(browser, browserTab),
+                Score = x.score,
+                Glyph = "\xE838"
+            };
+            if (faviconBin != null && faviconBin.Length > 0)
+            {
+                result.Icon = () => GetImageSourceFromRawPngData(faviconBin);
+            }
+            else
+            {
+                result.IcoPath = IconPath;
+            }
+
+            return result;
+        })];
     }
 
     private static BitmapImage GetImageSourceFromRawPngData(byte[] rawPngData)

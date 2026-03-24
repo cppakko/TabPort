@@ -184,5 +184,23 @@ namespace Community.PowerToys.Run.Plugin.TabPort.Properties {
                 return ResourceManager.GetString("url_weight_description", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Max Results.
+        /// </summary>
+        internal static string max_results {
+            get {
+                return ResourceManager.GetString("max_results", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum number of results to display. Reducing this value improves search performance when you have many tabs..
+        /// </summary>
+        internal static string max_results_description {
+            get {
+                return ResourceManager.GetString("max_results_description", resourceCulture);
+            }
+        }
     }
 }

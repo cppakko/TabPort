@@ -53,4 +53,10 @@
     <data name="url_weight" xml:space="preserve">
         <value>网站Url的权重</value>
     </data>
+    <data name="max_results" xml:space="preserve">
+        <value>最大结果数</value>
+    </data>
+    <data name="max_results_description" xml:space="preserve">
+        <value>显示的最大结果数量。当标签页较多时，减小此值可提升搜索性能。</value>
+    </data>
 </root>

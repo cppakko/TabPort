@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Community.PowerToys.Run.Plugin.TabPort.util;
 using Microsoft.Data.Sqlite;
 using Wox.Plugin.Logger;
@@ -8,6 +9,11 @@ namespace Community.PowerToys.Run.Plugin.TabPort;
 public class FaviconFetcher
 {
     private const int MaxRetryCount = 1;
+    private const int CacheCapacity = 500;
+
+    private static readonly LruCache<string, byte[]> FaviconCache = new(CacheCapacity);
+
+    public static void ClearCache() => FaviconCache.Clear();
 
     private const string FirefoxQuery =
         """
@@ -33,6 +39,15 @@ public class FaviconFetcher
         if (TemporarilyDisabled) return null;
         if (retryCount > MaxRetryCount) return null;
 
+        var hostName = GetHostName(domain);
+        if (hostName == null) return null;
+
+        // Check cache first
+        if (FaviconCache.TryGet(hostName, out var cached))
+        {
+            return cached.Length == 0 ? null : cached;
+        }
+
         try
         {
             var connection = SqliteConnectionUtils.Instance.GetConnection();
@@ -41,7 +56,7 @@ public class FaviconFetcher
                 : ChromiumQuery;
 
             using var command = new SqliteCommand(query, connection);
-            command.Parameters.AddWithValue("@domain", $"%{GetHostName(domain)}%");
+            command.Parameters.AddWithValue("@domain", $"%{hostName}%");
 
             using var reader = command.ExecuteReader();
             if (reader.Read())
@@ -56,8 +71,11 @@ public class FaviconFetcher
                     offset += (int)bytesRead;
                 }
 
+                FaviconCache.Set(hostName, icoBlob);
                 return icoBlob;
             }
+
+            FaviconCache.Set(hostName, []);
         }
         catch (SqliteException ex)
         {
@@ -77,6 +95,13 @@ public class FaviconFetcher
 
     private static string GetHostName(string url)
     {
-        return new Uri(url).Host;
+        try
+        {
+            return new Uri(url).Host;
+        }
+        catch
+        {
+            return null;
+        }
     }
 }

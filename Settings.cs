@@ -12,6 +12,7 @@ public class Settings
     public string CustomFaviconDbPath { get; set; }
     public double TitleWeight { get; set; } = 1;
     public double UrlWeight { get; set; } = 0;
+    public int MaxResults { get; set; } = 20;
     public FaviconDbPathPriorityItem FaviconDbPathPriority { get; set; }
 
     public enum FaviconDbPathPriorityItem
@@ -67,6 +68,14 @@ public class Settings
             DisplayLabel = Resources.custom_favicon_db_path,
             PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Textbox,
             TextValue = CustomFaviconDbPath
+        },
+        new()
+        {
+            Key = nameof(MaxResults),
+            DisplayDescription = Resources.max_results_description,
+            DisplayLabel = Resources.max_results,
+            PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Numberbox,
+            NumberValue = MaxResults
         }
     ];
 }

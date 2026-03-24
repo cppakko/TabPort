@@ -8,8 +8,8 @@
         <EnableWindowsTargeting>true</EnableWindowsTargeting>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.87.1"/>
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0"/>
+        <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.97.0" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.10" />
         <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.2"/>
     </ItemGroup>
     <ItemGroup>
